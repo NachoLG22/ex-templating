@@ -1,10 +1,63 @@
-// Iteration 3: import tweets data
+const Tweet = require("../models/tweet.model");
+const mongoose = require("mongoose");
 
-// Iteration 3: list tweets from file
-// Order tweets desc by date
-// Iteration 4: filter tweets by user checking the query param 'name'
+module.exports.list = (req, res, next) => {
+  Tweet.find()
+    .then((tweets) => {
+      res.render("tweets/list", { tweets });
+    })
+    .catch(next);
+};
 
+module.exports.detail = (req, res, next) => {
+  Tweet.findById(req.params.id)
+    .then((tweet) => {
+      res.render("tweets/detail", { tweet });
+    })
+    .catch(next);
+};
 
-// Iteration 5: Create tweet validating body params
+module.exports.create = (req, res, next) => {
+  res.render("tweets/new");
+};
 
-// Iteration 6: find tweet by id path param and delete it if exists
+module.exports.doCreate = (req, res, next) => {
+  Tweet.create(req.body)
+    .then(() => {
+      res.redirect("/tweets");
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.render("tweets/new", { errors: err.errors, tweet: req.body });
+      } else {
+        next(err);
+      }
+    });
+};
+
+module.exports.update = (req, res, next) => {
+  Tweet.findById(req.params.id)
+    .then((tweet) => {
+      res.render("tweets/edit", { tweet });
+    })
+    .catch(next);
+};
+
+module.exports.doUpdate = (req, res, next) => {
+  Tweet.findByIdAndUpdate(req.params.id, req.body, { runValidators: true })
+    .then((tweet) => {
+      res.redirect("/tweets");
+    })
+    .catch((err) => {
+      // TODO
+      next(err);
+    });
+};
+
+module.exports.delete = (req, res, next) => {
+  Tweet.findByIdAndDelete(req.params.id)
+    .then((tweet) => {
+      res.redirect("/tweets");
+    })
+    .catch(next);
+};

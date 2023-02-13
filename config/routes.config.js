@@ -1,16 +1,25 @@
-const express = require('express');
+const express = require("express");
 
-// Iteration 1: import common controller
-
-// Iteration 3: import tweets controller
+const common = require("../controllers/common.controller");
+const tweets = require("../controllers/tweets.controller");
+const users = require("../controllers/users.controller");
 
 const router = express.Router();
 
-// Iteration 1: link GET '/' with common controller home
+router.get("/", common.home);
 
+router.get("/users/new", users.create);
+router.post("/users", users.doCreate);
 
-// Iteration 3: link GET '/tweets' with tweets controller list
-// Iteration 4: link POST '/tweets' with tweets controller create
-// Iteration 5: link POST '/tweets/:id/delete' with tweets controller delete
+router.get("/login", users.login);
+router.post("/login", users.doLogin);
+
+router.get("/tweets", tweets.list);
+router.get("/tweets/new", tweets.create);
+router.post("/tweets", tweets.doCreate);
+router.get("/tweets/:id", tweets.detail);
+router.get("/tweets/:id/update", tweets.update);
+router.post("/tweets/:id", tweets.doUpdate);
+router.post("/tweets/:id/delete", tweets.delete);
 
 module.exports = router;
